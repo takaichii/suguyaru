@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# スグヤル
 
-## Getting Started
+**未来を、今の行動に。**
 
-First, run the development server:
+「今日やるタスクを自分で選ぶこと」に特化したシンプルなタスク管理アプリ。
+
+## 概要
+
+毎日、自分の意志で「今日やること」を最大5件選ぶ。  
+選んだタスクだけが Today 画面に表示される。
+
+## 技術スタック
+
+- [Next.js 16](https://nextjs.org/) (App Router)
+- TypeScript
+- Tailwind CSS v4
+- Zustand (localStorage 永続化)
+
+## セットアップ
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 をブラウザで開く。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 画面構成
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| パス | 画面 |
+|------|------|
+| `/` | Today — 今日のタスク一覧・完了チェック |
+| `/select` | タスク選択 — Today に追加するタスクを選ぶ（最大5件） |
+| `/tasks` | Task 管理 — タスクの作成・一覧 |
+| `/goals` | Goal 管理 — 目標の作成・一覧 |
 
-## Learn More
+## データ
 
-To learn more about Next.js, take a look at the following resources:
+すべてのデータは localStorage に保存される。バックエンド・認証なし。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ディレクトリ構成
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/          # Next.js ページ
+components/   # UI コンポーネント
+stores/       # Zustand ストア
+types/        # 共通型定義
+docs/         # 設計ドキュメント
+.steering/    # 作業単位のドキュメント
+```
