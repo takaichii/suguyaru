@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
+import Header from "@/components/layout/Header"
+import SplashScreen from "@/components/layout/SplashScreen";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className={jetbrainsMono.className}>
       <body className="min-h-screen bg-terminal-bg text-terminal-text">
+        <SplashScreen />
         <Header />
         <main className="max-w-2xl mx-auto px-4 py-8">{children}</main>
       </body>
