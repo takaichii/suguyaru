@@ -1,10 +1,12 @@
 "use client"
 
+import { useVisionStore } from "@/stores/visionStore"
 import { useGoalStore } from "@/stores/goalStore"
 import { useTaskStore } from "@/stores/taskStore"
 import GoalItem from "./GoalItem"
 
 export default function GoalList() {
+  const visions = useVisionStore((s) => s.visions)
   const goals = useGoalStore((s) => s.goals)
   const tasks = useTaskStore((s) => s.tasks)
 
@@ -16,15 +18,45 @@ export default function GoalList() {
     )
   }
 
+  const visionsWithGoals = visions.filter((v) =>
+    goals.some((g) => g.visionId === v.id)
+  )
+  const unclassifiedGoals = goals.filter((g) => !g.visionId)
+
   return (
-    <div className="border border-terminal-border">
-      {goals.map((goal) => (
-        <GoalItem
-          key={goal.id}
-          goal={goal}
-          taskCount={tasks.filter((t) => t.goalId === goal.id).length}
-        />
+    <div className="space-y-4">
+      {visionsWithGoals.map((vision) => (
+        <div key={vision.id} className="border border-terminal-border">
+          <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
+            <span className="text-terminal-green text-xs">Vision: </span>
+            <span className="text-terminal-text text-sm">{vision.title}</span>
+          </div>
+          {goals
+            .filter((g) => g.visionId === vision.id)
+            .map((goal) => (
+              <GoalItem
+                key={goal.id}
+                goal={goal}
+                taskCount={tasks.filter((t) => t.goalId === goal.id).length}
+              />
+            ))}
+        </div>
       ))}
+
+      {unclassifiedGoals.length > 0 && (
+        <div className="border border-terminal-border">
+          <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
+            <span className="text-terminal-muted text-sm">未分類</span>
+          </div>
+          {unclassifiedGoals.map((goal) => (
+            <GoalItem
+              key={goal.id}
+              goal={goal}
+              taskCount={tasks.filter((t) => t.goalId === goal.id).length}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

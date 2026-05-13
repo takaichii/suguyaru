@@ -8,6 +8,7 @@ const navItems = [
   { label: "Select", href: "/select" },
   { label: "Tasks", href: "/tasks" },
   { label: "Goals", href: "/goals" },
+  { label: "Visions", href: "/visions" },
 ]
 
 export default function Header() {
