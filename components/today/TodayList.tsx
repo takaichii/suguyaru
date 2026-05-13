@@ -72,9 +72,13 @@ export default function TodayList() {
 
       <Link
         href="/select"
-        className="inline-block border border-terminal-green text-terminal-green px-4 py-2 text-sm hover:bg-terminal-green hover:text-terminal-bg transition-colors"
+        className={`inline-block border px-4 py-2 text-sm transition-colors ${
+          todayItems.length >= MAX_TODAY_TASKS
+            ? "border-terminal-muted text-terminal-muted cursor-not-allowed"
+            : "border-terminal-green text-terminal-green hover:bg-terminal-green hover:text-terminal-bg"
+        }`}
       >
-        + タスクを選ぶ
+        + タスクを選ぶ ({todayItems.length}/{MAX_TODAY_TASKS})
       </Link>
     </div>
   )

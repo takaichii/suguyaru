@@ -35,7 +35,6 @@ export default function SelectList() {
   }
 
   const handleSubmit = () => {
-    // 外れたものを削除、追加されたものを追加
     for (const taskId of todayTaskIds) {
       if (!selected.has(taskId)) removeTodayTask(taskId)
     }
@@ -49,47 +48,52 @@ export default function SelectList() {
     (g) => incompleteTasks.filter((t) => t.goalId === g.id).length > 0
   )
 
-  if (incompleteTasks.length === 0) {
-    return (
-      <p className="text-terminal-muted text-sm">
-        &gt; 未完了のタスクはありません。タスクを作成しましょう。
-      </p>
-    )
-  }
-
   return (
     <div>
-      {isOverLimit && (
-        <p className="text-terminal-muted text-xs mb-4">
-          最大 {MAX_TODAY_TASKS} 件まで選択できます
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-terminal-green">
+          &gt; タスクを選ぶ
         </p>
-      )}
-      <div className="space-y-4 mb-6">
-        {goalsWithIncompleteTasks.map((goal) => (
-          <div key={goal.id} className="border border-terminal-border">
-            <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
-              <span className="text-terminal-green text-sm">[{goal.title}]</span>
-            </div>
-            {incompleteTasks
-              .filter((t) => t.goalId === goal.id)
-              .map((task) => (
-                <SelectItem
-                  key={task.id}
-                  task={task}
-                  isSelected={selected.has(task.id)}
-                  isDisabled={isOverLimit}
-                  onToggle={handleToggle}
-                />
-              ))}
-          </div>
-        ))}
+        <span className={`text-sm ${isOverLimit ? "text-yellow-400" : "text-terminal-muted"}`}>
+          {selected.size}/{MAX_TODAY_TASKS} 選択中
+          {isOverLimit && " — 上限"}
+        </span>
       </div>
-      <button
-        onClick={handleSubmit}
-        className="w-full border border-terminal-green text-terminal-green py-2 text-sm hover:bg-terminal-green hover:text-terminal-bg transition-colors"
-      >
-        追加する
-      </button>
+
+      {incompleteTasks.length === 0 ? (
+        <p className="text-terminal-muted text-sm">
+          &gt; 未完了のタスクはありません。タスクを作成しましょう。
+        </p>
+      ) : (
+        <>
+          <div className="space-y-4 mb-6">
+            {goalsWithIncompleteTasks.map((goal) => (
+              <div key={goal.id} className="border border-terminal-border">
+                <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
+                  <span className="text-terminal-green text-sm">[{goal.title}]</span>
+                </div>
+                {incompleteTasks
+                  .filter((t) => t.goalId === goal.id)
+                  .map((task) => (
+                    <SelectItem
+                      key={task.id}
+                      task={task}
+                      isSelected={selected.has(task.id)}
+                      isDisabled={isOverLimit}
+                      onToggle={handleToggle}
+                    />
+                  ))}
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={handleSubmit}
+            className="w-full border border-terminal-green text-terminal-green py-2 text-sm hover:bg-terminal-green hover:text-terminal-bg transition-colors"
+          >
+            追加する
+          </button>
+        </>
+      )}
     </div>
   )
 }
