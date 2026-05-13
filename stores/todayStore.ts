@@ -35,6 +35,6 @@ export const useTodayStore = create<TodayStore>()(
       getTodayTasks: () =>
         get().todayTasks.filter((t) => t.date === today()),
     }),
-    { name: "suguyaru-today" }
+    { name: "suguyaru-today", skipHydration: true }
   )
 )
