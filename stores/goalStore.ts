@@ -23,6 +23,6 @@ export const useGoalStore = create<GoalStore>()(
           goals: state.goals.filter((g) => g.id !== goalId),
         })),
     }),
-    { name: "suguyaru-goals" }
+    { name: "suguyaru-goals", skipHydration: true }
   )
 )

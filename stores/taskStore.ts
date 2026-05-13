@@ -38,6 +38,6 @@ export const useTaskStore = create<TaskStore>()(
           tasks: state.tasks.filter((t) => t.goalId !== goalId),
         })),
     }),
-    { name: "suguyaru-tasks" }
+    { name: "suguyaru-tasks", skipHydration: true }
   )
 )
