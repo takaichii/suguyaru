@@ -16,6 +16,14 @@ export default function TodayList() {
     .map((tt) => tasks.find((t) => t.id === tt.taskId))
     .filter((t): t is NonNullable<typeof t> => t !== undefined)
 
+  const doneItems = todayItems.filter((t) => t.isDone)
+  const pendingItems = todayItems.filter((t) => !t.isDone)
+  const sortedItems = [...pendingItems, ...doneItems]
+
+  const doneCount = doneItems.length
+  const totalCount = todayItems.length
+  const progressPercent = totalCount > 0 ? (doneCount / totalCount) * 100 : 0
+
   const today = new Date().toLocaleDateString("ja-JP", {
     year: "numeric",
     month: "2-digit",
@@ -36,11 +44,30 @@ export default function TodayList() {
           &gt; 今日のタスクはまだありません。タスクを選びましょう。
         </p>
       ) : (
-        <div className="border border-terminal-border mb-6">
-          {todayItems.map((task) => (
-            <TodayItem key={task.id} task={task} />
-          ))}
-        </div>
+        <>
+          {/* プログレスバー */}
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-terminal-muted mb-1">
+              <span>{doneCount}/{totalCount} 完了</span>
+              {doneCount === totalCount && totalCount > 0 && (
+                <span className="text-terminal-green">all done.</span>
+              )}
+            </div>
+            <div className="h-px bg-terminal-border w-full">
+              <div
+                className="h-px bg-terminal-green transition-all duration-500"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+
+          {/* タスク一覧（未完了が上・完了が下） */}
+          <div className="border border-terminal-border mb-6">
+            {sortedItems.map((task) => (
+              <TodayItem key={task.id} task={task} />
+            ))}
+          </div>
+        </>
       )}
 
       <Link
