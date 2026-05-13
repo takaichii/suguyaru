@@ -8,6 +8,7 @@ interface TodayStore {
   todayTasks: TodayTask[]
   addTodayTask: (taskId: string) => void
   removeTodayTask: (taskId: string) => void
+  removeTodayTasksByIds: (taskIds: string[]) => void
   getTodayTasks: () => TodayTask[]
 }
 
@@ -26,6 +27,10 @@ export const useTodayStore = create<TodayStore>()(
           todayTasks: state.todayTasks.filter(
             (t) => !(t.taskId === taskId && t.date === today())
           ),
+        })),
+      removeTodayTasksByIds: (taskIds) =>
+        set((state) => ({
+          todayTasks: state.todayTasks.filter((t) => !taskIds.includes(t.taskId)),
         })),
       getTodayTasks: () =>
         get().todayTasks.filter((t) => t.date === today()),
