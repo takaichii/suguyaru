@@ -15,11 +15,11 @@ export default function Header() {
 
   return (
     <header className="border-b border-terminal-border px-4 py-3">
-      <nav className="max-w-2xl mx-auto flex items-center gap-6">
-        <span className="text-terminal-green font-bold tracking-wider">
+      <nav className="max-w-2xl mx-auto flex flex-wrap items-center gap-x-6 gap-y-2">
+        <span className="text-terminal-green font-bold tracking-wider shrink-0">
           &gt; スグヤル
         </span>
-        <div className="flex gap-4 text-sm">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
           {navItems.map((item) => (
             <Link
               key={item.href}
