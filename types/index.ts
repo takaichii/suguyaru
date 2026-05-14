@@ -1,6 +1,12 @@
+export type Vision = {
+  id: string
+  title: string
+}
+
 export type Goal = {
   id: string
   title: string
+  visionId?: string
 }
 
 export type Task = {

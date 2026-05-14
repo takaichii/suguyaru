@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useVisionStore } from "@/stores/visionStore"
 import { useGoalStore } from "@/stores/goalStore"
 import { useTaskStore } from "@/stores/taskStore"
 import { useTodayStore } from "@/stores/todayStore"
@@ -11,6 +12,7 @@ const MAX_TODAY_TASKS = 5
 
 export default function SelectList() {
   const router = useRouter()
+  const visions = useVisionStore((s) => s.visions)
   const goals = useGoalStore((s) => s.goals)
   const tasks = useTaskStore((s) => s.tasks)
   const { addTodayTask, removeTodayTask, getTodayTasks } = useTodayStore()
@@ -44,16 +46,20 @@ export default function SelectList() {
     router.push("/")
   }
 
-  const goalsWithIncompleteTasks = goals.filter(
-    (g) => incompleteTasks.filter((t) => t.goalId === g.id).length > 0
+  const goalsWithIncompleteTasks = goals.filter((g) =>
+    incompleteTasks.some((t) => t.goalId === g.id)
   )
+
+  // Vision ごとにグループ化
+  const visionsWithGoals = visions.filter((v) =>
+    goalsWithIncompleteTasks.some((g) => g.visionId === v.id)
+  )
+  const unclassifiedGoals = goalsWithIncompleteTasks.filter((g) => !g.visionId)
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <p className="text-terminal-green">
-          &gt; タスクを選ぶ
-        </p>
+        <p className="text-terminal-green">&gt; タスクを選ぶ</p>
         <span className={`text-sm ${isOverLimit ? "text-yellow-400" : "text-terminal-muted"}`}>
           {selected.size}/{MAX_TODAY_TASKS} 選択中
           {isOverLimit && " — 上限"}
@@ -67,10 +73,38 @@ export default function SelectList() {
       ) : (
         <>
           <div className="space-y-4 mb-6">
-            {goalsWithIncompleteTasks.map((goal) => (
+            {visionsWithGoals.map((vision) => (
+              <div key={vision.id}>
+                <p className="text-terminal-muted text-xs mb-2 px-1">[{vision.title}]</p>
+                <div className="space-y-2 pl-2">
+                  {goalsWithIncompleteTasks
+                    .filter((g) => g.visionId === vision.id)
+                    .map((goal) => (
+                      <div key={goal.id} className="border border-terminal-border">
+                        <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
+                          <span className="text-terminal-green text-sm">{goal.title}</span>
+                        </div>
+                        {incompleteTasks
+                          .filter((t) => t.goalId === goal.id)
+                          .map((task) => (
+                            <SelectItem
+                              key={task.id}
+                              task={task}
+                              isSelected={selected.has(task.id)}
+                              isDisabled={isOverLimit}
+                              onToggle={handleToggle}
+                            />
+                          ))}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            ))}
+
+            {unclassifiedGoals.map((goal) => (
               <div key={goal.id} className="border border-terminal-border">
                 <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
-                  <span className="text-terminal-green text-sm">[{goal.title}]</span>
+                  <span className="text-terminal-green text-sm">{goal.title}</span>
                 </div>
                 {incompleteTasks
                   .filter((t) => t.goalId === goal.id)
