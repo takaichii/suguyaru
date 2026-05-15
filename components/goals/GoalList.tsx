@@ -3,12 +3,14 @@
 import { useVisionStore } from "@/stores/visionStore"
 import { useGoalStore } from "@/stores/goalStore"
 import { useTaskStore } from "@/stores/taskStore"
+import { useUiStore } from "@/stores/uiStore"
 import GoalItem from "./GoalItem"
 
 export default function GoalList() {
   const visions = useVisionStore((s) => s.visions)
   const goals = useGoalStore((s) => s.goals)
   const tasks = useTaskStore((s) => s.tasks)
+  const { collapsedVisionIds, toggleVisionCollapsed } = useUiStore()
 
   if (goals.length === 0) {
     return (
@@ -25,15 +27,23 @@ export default function GoalList() {
 
   return (
     <div className="space-y-4">
-      {visionsWithGoals.map((vision) => (
-        <div key={vision.id} className="border border-terminal-border">
-          <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
-            <span className="text-terminal-green text-xs">Vision: </span>
-            <span className="text-terminal-text text-sm">{vision.title}</span>
-          </div>
-          {goals
-            .filter((g) => g.visionId === vision.id)
-            .map((goal) => {
+      {visionsWithGoals.map((vision) => {
+        const isCollapsed = collapsedVisionIds.includes(vision.id)
+        const visionGoals = goals.filter((g) => g.visionId === vision.id)
+        return (
+          <div key={vision.id} className="border border-terminal-border">
+            <button
+              onClick={() => toggleVisionCollapsed(vision.id)}
+              className="w-full flex items-center gap-2 px-4 py-2 border-b border-terminal-border bg-terminal-border hover:opacity-80 transition-opacity text-left"
+            >
+              <span className="text-terminal-muted text-xs w-4 shrink-0">
+                {isCollapsed ? "[+]" : "[-]"}
+              </span>
+              <span className="text-terminal-green text-xs">Vision: </span>
+              <span className="text-terminal-text text-sm flex-1">{vision.title}</span>
+              <span className="text-terminal-muted text-xs">{visionGoals.length} goals</span>
+            </button>
+            {!isCollapsed && visionGoals.map((goal) => {
               const goalTasks = tasks.filter((t) => t.goalId === goal.id)
               return (
                 <GoalItem
@@ -44,8 +54,9 @@ export default function GoalList() {
                 />
               )
             })}
-        </div>
-      ))}
+          </div>
+        )
+      })}
 
       {unclassifiedGoals.length > 0 && (
         <div className="border border-terminal-border">
