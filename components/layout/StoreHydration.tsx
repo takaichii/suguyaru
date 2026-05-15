@@ -14,6 +14,7 @@ export default function StoreHydration() {
     useTaskStore.persist.rehydrate()
     useTodayStore.persist.rehydrate()
     useUiStore.persist.rehydrate()
+    useTodayStore.getState().cleanupOldTodayTasks()
   }, [])
   return null
 }

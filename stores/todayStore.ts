@@ -10,9 +10,18 @@ interface TodayStore {
   removeTodayTask: (taskId: string) => void
   removeTodayTasksByIds: (taskIds: string[]) => void
   getTodayTasks: () => TodayTask[]
+  cleanupOldTodayTasks: () => void
 }
 
 const today = () => new Date().toISOString().slice(0, 10)
+
+const CLEANUP_DAYS = 30
+
+const isOlderThan = (dateStr: string, days: number) => {
+  const cutoff = new Date()
+  cutoff.setDate(cutoff.getDate() - days)
+  return new Date(dateStr) < cutoff
+}
 
 export const useTodayStore = create<TodayStore>()(
   persist(
@@ -34,6 +43,10 @@ export const useTodayStore = create<TodayStore>()(
         })),
       getTodayTasks: () =>
         get().todayTasks.filter((t) => t.date === today()),
+      cleanupOldTodayTasks: () =>
+        set((state) => ({
+          todayTasks: state.todayTasks.filter((t) => !isOlderThan(t.date, CLEANUP_DAYS)),
+        })),
     }),
     { name: "suguyaru-today", skipHydration: true }
   )
