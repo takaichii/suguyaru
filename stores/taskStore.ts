@@ -10,6 +10,7 @@ interface TaskStore {
   toggleTaskDone: (taskId: string) => void
   deleteTask: (taskId: string) => void
   deleteTasksByGoalId: (goalId: string) => void
+  deleteCompletedTasks: () => string[]
 }
 
 export const useTaskStore = create<TaskStore>()(
@@ -37,6 +38,14 @@ export const useTaskStore = create<TaskStore>()(
         set((state) => ({
           tasks: state.tasks.filter((t) => t.goalId !== goalId),
         })),
+      deleteCompletedTasks: () => {
+        let deletedIds: string[] = []
+        set((state) => {
+          deletedIds = state.tasks.filter((t) => t.isDone).map((t) => t.id)
+          return { tasks: state.tasks.filter((t) => !t.isDone) }
+        })
+        return deletedIds
+      },
     }),
     { name: "suguyaru-tasks", skipHydration: true }
   )
