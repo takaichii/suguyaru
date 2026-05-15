@@ -10,7 +10,7 @@ export default function TaskList() {
   const visions = useVisionStore((s) => s.visions)
   const goals = useGoalStore((s) => s.goals)
   const tasks = useTaskStore((s) => s.tasks)
-  const { showCompletedTasks, toggleShowCompletedTasks } = useUiStore()
+  const { showCompletedTasks, toggleShowCompletedTasks, collapsedGoalIds, toggleGoalCollapsed } = useUiStore()
 
   if (tasks.length === 0) {
     return (
@@ -47,19 +47,26 @@ export default function TaskList() {
         <div className="space-y-4">
           {goalsWithTasks.map((goal) => {
             const visionLabel = getVisionLabel(goal.visionId)
+            const isCollapsed = collapsedGoalIds.includes(goal.id)
+            const goalTasks = visibleTasks.filter((t) => t.goalId === goal.id)
             return (
               <div key={goal.id} className="border border-terminal-border">
-                <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
+                <button
+                  onClick={() => toggleGoalCollapsed(goal.id)}
+                  className="w-full flex items-center gap-2 px-4 py-2 border-b border-terminal-border bg-terminal-border hover:opacity-80 transition-opacity text-left"
+                >
+                  <span className="text-terminal-muted text-xs w-4 shrink-0">
+                    {isCollapsed ? "[+]" : "[-]"}
+                  </span>
                   {visionLabel && (
                     <span className="text-terminal-muted text-xs">{visionLabel} &gt; </span>
                   )}
-                  <span className="text-terminal-green text-sm">{goal.title}</span>
-                </div>
-                {visibleTasks
-                  .filter((t) => t.goalId === goal.id)
-                  .map((task) => (
-                    <TaskItem key={task.id} task={task} />
-                  ))}
+                  <span className="text-terminal-green text-sm flex-1">{goal.title}</span>
+                  <span className="text-terminal-muted text-xs">{goalTasks.length} tasks</span>
+                </button>
+                {!isCollapsed && goalTasks.map((task) => (
+                  <TaskItem key={task.id} task={task} />
+                ))}
               </div>
             )
           })}
