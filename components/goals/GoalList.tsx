@@ -33,13 +33,17 @@ export default function GoalList() {
           </div>
           {goals
             .filter((g) => g.visionId === vision.id)
-            .map((goal) => (
-              <GoalItem
-                key={goal.id}
-                goal={goal}
-                taskCount={tasks.filter((t) => t.goalId === goal.id).length}
-              />
-            ))}
+            .map((goal) => {
+              const goalTasks = tasks.filter((t) => t.goalId === goal.id)
+              return (
+                <GoalItem
+                  key={goal.id}
+                  goal={goal}
+                  taskCount={goalTasks.length}
+                  doneCount={goalTasks.filter((t) => t.isDone).length}
+                />
+              )
+            })}
         </div>
       ))}
 
@@ -48,13 +52,17 @@ export default function GoalList() {
           <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
             <span className="text-terminal-muted text-sm">未分類</span>
           </div>
-          {unclassifiedGoals.map((goal) => (
-            <GoalItem
-              key={goal.id}
-              goal={goal}
-              taskCount={tasks.filter((t) => t.goalId === goal.id).length}
-            />
-          ))}
+          {unclassifiedGoals.map((goal) => {
+            const goalTasks = tasks.filter((t) => t.goalId === goal.id)
+            return (
+              <GoalItem
+                key={goal.id}
+                goal={goal}
+                taskCount={goalTasks.length}
+                doneCount={goalTasks.filter((t) => t.isDone).length}
+              />
+            )
+          })}
         </div>
       )}
     </div>
