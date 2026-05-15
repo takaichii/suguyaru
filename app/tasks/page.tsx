@@ -1,10 +1,14 @@
 import TaskForm from "@/components/tasks/TaskForm"
 import TaskList from "@/components/tasks/TaskList"
+import BulkDeleteCompletedButton from "@/components/tasks/BulkDeleteCompletedButton"
 
 export default function TasksPage() {
   return (
     <div>
-      <p className="text-terminal-green mb-6">&gt; タスク管理</p>
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-terminal-green">&gt; タスク管理</p>
+        <BulkDeleteCompletedButton />
+      </div>
       <TaskForm />
       <TaskList />
     </div>
