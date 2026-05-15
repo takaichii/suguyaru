@@ -1,3 +1,5 @@
+"use client"
+
 import type { Task } from "@/types"
 
 type SelectItemProps = {
