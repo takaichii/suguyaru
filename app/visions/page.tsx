@@ -4,7 +4,7 @@ import VisionList from "@/components/visions/VisionList"
 export default function VisionsPage() {
   return (
     <div>
-      <p className="text-terminal-green mb-6">&gt; Vision 管理</p>
+      <p className="text-terminal-green mb-6">&gt; Visions</p>
       <VisionForm />
       <VisionList />
     </div>

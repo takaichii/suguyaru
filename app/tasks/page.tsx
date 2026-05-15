@@ -6,7 +6,7 @@ export default function TasksPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <p className="text-terminal-green">&gt; タスク管理</p>
+        <p className="text-terminal-green">&gt; Tasks</p>
         <BulkDeleteCompletedButton />
       </div>
       <TaskForm />
