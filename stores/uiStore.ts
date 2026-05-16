@@ -3,6 +3,8 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
+export type TaskSortOrder = 'goal' | 'created' | 'dueDate'
+
 interface UiStore {
   showCompletedTasks: boolean
   toggleShowCompletedTasks: () => void
@@ -10,6 +12,8 @@ interface UiStore {
   collapsedGoalIds: string[]
   toggleVisionCollapsed: (visionId: string) => void
   toggleGoalCollapsed: (goalId: string) => void
+  taskSortOrder: TaskSortOrder
+  setTaskSortOrder: (order: TaskSortOrder) => void
 }
 
 export const useUiStore = create<UiStore>()(
@@ -32,6 +36,8 @@ export const useUiStore = create<UiStore>()(
             ? state.collapsedGoalIds.filter((id) => id !== goalId)
             : [...state.collapsedGoalIds, goalId],
         })),
+      taskSortOrder: 'goal',
+      setTaskSortOrder: (order) => set({ taskSortOrder: order }),
     }),
     { name: "suguyaru-ui", skipHydration: true }
   )
