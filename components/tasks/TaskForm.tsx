@@ -9,6 +9,7 @@ export default function TaskForm() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const [title, setTitle] = useState("")
   const [goalId, setGoalId] = useState("")
+  const [dueDate, setDueDate] = useState("")
   const [isOpen, setIsOpen] = useState(false)
   const [error, setError] = useState("")
   const goals = useGoalStore((s) => s.goals)
@@ -47,8 +48,9 @@ export default function TaskForm() {
       return
     }
     setError("")
-    addTask(trimmed, goalId)
+    addTask(trimmed, goalId, dueDate || undefined)
     setTitle("")
+    setDueDate("")
     inputRef.current?.focus()
   }
 
@@ -107,6 +109,26 @@ export default function TaskForm() {
               </button>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* 期限（任意） */}
+      <div className="flex items-center gap-2">
+        <label className="text-terminal-muted text-xs shrink-0">期限（任意）:</label>
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          className="flex-1 bg-transparent border border-terminal-border text-terminal-text text-sm px-2 py-1 focus:outline-none focus:border-terminal-green transition-colors [color-scheme:dark]"
+        />
+        {dueDate && (
+          <button
+            type="button"
+            onClick={() => setDueDate("")}
+            className="text-terminal-muted hover:text-terminal-text text-xs"
+          >
+            ✕
+          </button>
         )}
       </div>
 

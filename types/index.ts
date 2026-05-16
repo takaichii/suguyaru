@@ -14,6 +14,7 @@ export type Task = {
   title: string
   goalId: string
   isDone: boolean
+  dueDate?: string  // "YYYY-MM-DD"
 }
 
 export type TodayTask = {
