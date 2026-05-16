@@ -6,42 +6,62 @@ import type { Goal, Task } from "@/types"
 type MapGoalNodeProps = {
   goal: Goal
   tasks: Task[]
+  isLast: boolean
 }
 
-export default function MapGoalNode({ goal, tasks }: MapGoalNodeProps) {
+export default function MapGoalNode({ goal, tasks, isLast }: MapGoalNodeProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const doneCount = tasks.filter((t) => t.isDone).length
   const isAllDone = tasks.length > 0 && doneCount === tasks.length
+  const hasTasks = tasks.length > 0
+
+  const branchChar = isLast ? "└─" : "├─"
+  const childIndent = isLast ? "   " : "│  "
 
   return (
-    <div className="ml-4 border-l border-terminal-border pl-3">
+    <div className="font-mono">
       <button
-        onClick={() => setIsCollapsed((v) => !v)}
-        className="flex items-center gap-2 py-1 w-full text-left hover:opacity-80 transition-opacity"
+        onClick={() => hasTasks && setIsCollapsed((v) => !v)}
+        className={`flex items-center gap-2 py-1 w-full text-left ${hasTasks ? "hover:opacity-80 transition-opacity" : ""}`}
       >
-        <span className="text-terminal-muted text-xs w-4 shrink-0">
-          {tasks.length === 0 ? " " : isCollapsed ? "[+]" : "[-]"}
+        <span className="text-terminal-muted text-xs shrink-0">{branchChar}</span>
+        <span className={`text-xs shrink-0 ${isAllDone ? "text-terminal-green" : "text-terminal-muted"}`}>
+          {isAllDone ? "●" : "○"}
         </span>
-        <span className={`text-sm ${isAllDone ? "text-terminal-green" : "text-terminal-text"}`}>
+        <span className={`text-sm flex-1 ${isAllDone ? "text-terminal-green" : "text-terminal-text"}`}>
           {goal.title}
         </span>
-        {tasks.length > 0 && (
-          <span className={`text-xs ml-auto ${isAllDone ? "text-terminal-green" : "text-terminal-muted"}`}>
-            {doneCount}/{tasks.length}
+        {hasTasks && (
+          <span className={`text-xs shrink-0 ${isAllDone ? "text-terminal-green" : "text-terminal-muted"}`}>
+            [{doneCount}/{tasks.length}]
+          </span>
+        )}
+        {isAllDone && (
+          <span className="text-terminal-green text-xs shrink-0 tracking-widest ml-1">DONE</span>
+        )}
+        {hasTasks && (
+          <span className="text-terminal-muted text-xs shrink-0 ml-1 w-3">
+            {isCollapsed ? "▶" : "▼"}
           </span>
         )}
       </button>
 
-      {!isCollapsed && tasks.map((task) => (
-        <div key={task.id} className="ml-6 flex items-center gap-2 py-0.5">
-          <span className={`text-xs ${task.isDone ? "text-terminal-green" : "text-terminal-muted"}`}>
-            {task.isDone ? "[x]" : "[ ]"}
-          </span>
-          <span className={`text-xs ${task.isDone ? "text-terminal-muted line-through" : "text-terminal-text"}`}>
-            {task.title}
-          </span>
-        </div>
-      ))}
+      {!isCollapsed && tasks.map((task, i) => {
+        const isLastTask = i === tasks.length - 1
+        return (
+          <div key={task.id} className="flex items-center gap-2 py-0.5">
+            <span className="text-terminal-muted text-xs shrink-0 select-none">
+              {childIndent}{isLastTask ? "└──" : "├──"}
+            </span>
+            <span className={`text-xs shrink-0 ${task.isDone ? "text-terminal-green" : "text-terminal-muted"}`}>
+              {task.isDone ? "[x]" : "[ ]"}
+            </span>
+            <span className={`text-xs ${task.isDone ? "text-terminal-muted line-through" : "text-terminal-text"}`}>
+              {task.title}
+            </span>
+          </div>
+        )
+      })}
     </div>
   )
 }
