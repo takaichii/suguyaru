@@ -7,6 +7,7 @@ import type { Vision } from "@/types"
 interface VisionStore {
   visions: Vision[]
   addVision: (title: string) => void
+  updateVision: (visionId: string, title: string) => void
   deleteVision: (visionId: string) => void
 }
 
@@ -17,6 +18,10 @@ export const useVisionStore = create<VisionStore>()(
       addVision: (title) =>
         set((state) => ({
           visions: [...state.visions, { id: crypto.randomUUID(), title }],
+        })),
+      updateVision: (visionId, title) =>
+        set((state) => ({
+          visions: state.visions.map((v) => v.id === visionId ? { ...v, title } : v),
         })),
       deleteVision: (visionId) =>
         set((state) => ({
