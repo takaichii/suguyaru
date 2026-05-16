@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useTodayStore } from "@/stores/todayStore"
 import { useTaskStore } from "@/stores/taskStore"
@@ -10,6 +11,17 @@ export default function TodayList() {
   const getTodayTasks = useTodayStore((s) => s.getTodayTasks)
   const swapTodayTasks = useTodayStore((s) => s.swapTodayTasks)
   const tasks = useTaskStore((s) => s.tasks)
+  const [todayLabel, setTodayLabel] = useState("")
+
+  useEffect(() => {
+    setTodayLabel(
+      new Date().toLocaleDateString("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+    )
+  }, [])
 
   const todayTasks = getTodayTasks()
   const todayItems = todayTasks
@@ -23,19 +35,13 @@ export default function TodayList() {
   const totalCount = todayItems.length
   const progressPercent = totalCount > 0 ? (doneCount / totalCount) * 100 : 0
 
-  const today = new Date().toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  })
-
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <p className="text-terminal-green">
           &gt; 今日のタスク ({todayItems.length}/{MAX_TODAY_TASKS})
         </p>
-        <span className="text-terminal-muted text-xs">{today}</span>
+        <span className="text-terminal-muted text-xs">{todayLabel}</span>
       </div>
 
       {todayItems.length === 0 ? (

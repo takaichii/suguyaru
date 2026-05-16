@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useVisionStore } from "@/stores/visionStore"
 import { useGoalStore } from "@/stores/goalStore"
 import { useTaskStore } from "@/stores/taskStore"
@@ -21,6 +22,17 @@ export default function MapTree() {
   const visions = useVisionStore((s) => s.visions)
   const goals = useGoalStore((s) => s.goals)
   const tasks = useTaskStore((s) => s.tasks)
+  const [todayLabel, setTodayLabel] = useState("")
+
+  useEffect(() => {
+    setTodayLabel(
+      new Date().toLocaleDateString("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+    )
+  }, [])
 
   const doneTasks = tasks.filter((t) => t.isDone).length
   const isAllDone = tasks.length > 0 && doneTasks === tasks.length
@@ -45,9 +57,7 @@ export default function MapTree() {
       <div className="border border-terminal-border">
         <div className="px-4 py-1.5 border-b border-terminal-border bg-terminal-border flex items-center gap-3">
           <span className="text-terminal-green text-xs tracking-widest">OVERVIEW</span>
-          <span className="text-terminal-muted text-xs ml-auto">
-            {new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })}
-          </span>
+          <span className="text-terminal-muted text-xs ml-auto">{todayLabel}</span>
         </div>
         <div className="px-4 py-3 space-y-2">
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-terminal-muted">
