@@ -21,7 +21,7 @@ export default function Header() {
         <span className="text-terminal-green font-bold tracking-wider shrink-0">
           &gt; スグヤル
         </span>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm flex-1">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -36,6 +36,7 @@ export default function Header() {
             </Link>
           ))}
         </div>
+        <span className="text-terminal-muted text-xs shrink-0 hidden sm:block">? for shortcuts</span>
       </nav>
     </header>
   )
