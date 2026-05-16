@@ -7,6 +7,7 @@ import type { Goal } from "@/types"
 interface GoalStore {
   goals: Goal[]
   addGoal: (title: string, visionId?: string) => void
+  updateGoal: (goalId: string, title: string) => void
   deleteGoal: (goalId: string) => void
   deleteGoalsByVisionId: (visionId: string) => void
 }
@@ -18,6 +19,10 @@ export const useGoalStore = create<GoalStore>()(
       addGoal: (title, visionId) =>
         set((state) => ({
           goals: [...state.goals, { id: crypto.randomUUID(), title, visionId }],
+        })),
+      updateGoal: (goalId, title) =>
+        set((state) => ({
+          goals: state.goals.map((g) => g.id === goalId ? { ...g, title } : g),
         })),
       deleteGoal: (goalId) =>
         set((state) => ({

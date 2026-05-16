@@ -7,6 +7,7 @@ import type { Task } from "@/types"
 interface TaskStore {
   tasks: Task[]
   addTask: (title: string, goalId: string) => void
+  updateTask: (taskId: string, title: string) => void
   toggleTaskDone: (taskId: string) => void
   deleteTask: (taskId: string) => void
   deleteTasksByGoalId: (goalId: string) => void
@@ -23,6 +24,10 @@ export const useTaskStore = create<TaskStore>()(
             ...state.tasks,
             { id: crypto.randomUUID(), title, goalId, isDone: false },
           ],
+        })),
+      updateTask: (taskId, title) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) => t.id === taskId ? { ...t, title } : t),
         })),
       toggleTaskDone: (taskId) =>
         set((state) => ({
