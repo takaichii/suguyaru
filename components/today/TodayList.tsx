@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useTodayStore } from "@/stores/todayStore"
 import { useTaskStore } from "@/stores/taskStore"
@@ -12,6 +12,8 @@ export default function TodayList() {
   const swapTodayTasks = useTodayStore((s) => s.swapTodayTasks)
   const tasks = useTaskStore((s) => s.tasks)
   const [todayLabel, setTodayLabel] = useState("")
+  const [showAllDone, setShowAllDone] = useState(false)
+  const prevAllDoneRef = useRef(false)
 
   useEffect(() => {
     setTodayLabel(
@@ -34,6 +36,17 @@ export default function TodayList() {
   const doneCount = doneItems.length
   const totalCount = todayItems.length
   const progressPercent = totalCount > 0 ? (doneCount / totalCount) * 100 : 0
+  const isAllDone = totalCount > 0 && doneCount === totalCount
+
+  useEffect(() => {
+    if (isAllDone && !prevAllDoneRef.current) {
+      setShowAllDone(true)
+      const timer = setTimeout(() => setShowAllDone(false), 3000)
+      prevAllDoneRef.current = true
+      return () => clearTimeout(timer)
+    }
+    if (!isAllDone) prevAllDoneRef.current = false
+  }, [isAllDone])
 
   return (
     <div>
@@ -65,6 +78,12 @@ export default function TodayList() {
               />
             </div>
           </div>
+
+          {showAllDone && (
+            <div className="mb-3 px-3 py-2 border border-terminal-green text-terminal-green text-sm animate-pulse">
+              &gt; all tasks done. well done.
+            </div>
+          )}
 
           {/* タスク一覧（未完了が上・完了が下） */}
           <div className="border border-terminal-border mb-6">
