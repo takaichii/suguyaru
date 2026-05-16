@@ -4,8 +4,7 @@ import Link from "next/link"
 import { useTodayStore } from "@/stores/todayStore"
 import { useTaskStore } from "@/stores/taskStore"
 import TodayItem from "./TodayItem"
-
-const MAX_TODAY_TASKS = 5
+import { MAX_TODAY_TASKS } from "@/lib/constants"
 
 export default function TodayList() {
   const getTodayTasks = useTodayStore((s) => s.getTodayTasks)

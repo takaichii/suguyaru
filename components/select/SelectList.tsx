@@ -7,8 +7,7 @@ import { useGoalStore } from "@/stores/goalStore"
 import { useTaskStore } from "@/stores/taskStore"
 import { useTodayStore } from "@/stores/todayStore"
 import SelectItem from "./SelectItem"
-
-const MAX_TODAY_TASKS = 5
+import { MAX_TODAY_TASKS } from "@/lib/constants"
 
 export default function SelectList() {
   const router = useRouter()
