@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header"
 import SplashScreen from "@/components/layout/SplashScreen"
 import StoreHydration from "@/components/layout/StoreHydration";
 import PwaRegistration from "@/components/layout/PwaRegistration";
+import KeyboardShortcuts from "@/components/layout/KeyboardShortcuts";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
     <html lang="ja" className={jetbrainsMono.className}>
       <body className="min-h-screen bg-terminal-bg text-terminal-text">
         <PwaRegistration />
+        <KeyboardShortcuts />
         <StoreHydration />
         <SplashScreen />
         <Header />
