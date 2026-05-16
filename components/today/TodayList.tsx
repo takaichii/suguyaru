@@ -8,6 +8,7 @@ import { MAX_TODAY_TASKS } from "@/lib/constants"
 
 export default function TodayList() {
   const getTodayTasks = useTodayStore((s) => s.getTodayTasks)
+  const swapTodayTasks = useTodayStore((s) => s.swapTodayTasks)
   const tasks = useTaskStore((s) => s.tasks)
 
   const todayTasks = getTodayTasks()
@@ -17,7 +18,6 @@ export default function TodayList() {
 
   const doneItems = todayItems.filter((t) => t.isDone)
   const pendingItems = todayItems.filter((t) => !t.isDone)
-  const sortedItems = [...pendingItems, ...doneItems]
 
   const doneCount = doneItems.length
   const totalCount = todayItems.length
@@ -62,7 +62,18 @@ export default function TodayList() {
 
           {/* タスク一覧（未完了が上・完了が下） */}
           <div className="border border-terminal-border mb-6">
-            {sortedItems.map((task) => (
+            {pendingItems.map((task, idx) => (
+              <TodayItem
+                key={task.id}
+                task={task}
+                isPending
+                isFirst={idx === 0}
+                isLast={idx === pendingItems.length - 1}
+                onMoveUp={() => swapTodayTasks(task.id, pendingItems[idx - 1].id)}
+                onMoveDown={() => swapTodayTasks(task.id, pendingItems[idx + 1].id)}
+              />
+            ))}
+            {doneItems.map((task) => (
               <TodayItem key={task.id} task={task} />
             ))}
           </div>

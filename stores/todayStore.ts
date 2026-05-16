@@ -11,6 +11,7 @@ interface TodayStore {
   removeTodayTasksByIds: (taskIds: string[]) => void
   getTodayTasks: () => TodayTask[]
   cleanupOldTodayTasks: () => void
+  swapTodayTasks: (taskId1: string, taskId2: string) => void
 }
 
 const today = () => new Date().toISOString().slice(0, 10)
@@ -47,6 +48,15 @@ export const useTodayStore = create<TodayStore>()(
         set((state) => ({
           todayTasks: state.todayTasks.filter((t) => !isOlderThan(t.date, CLEANUP_DAYS)),
         })),
+      swapTodayTasks: (taskId1, taskId2) =>
+        set((state) => {
+          const idx1 = state.todayTasks.findIndex((t) => t.taskId === taskId1)
+          const idx2 = state.todayTasks.findIndex((t) => t.taskId === taskId2)
+          if (idx1 === -1 || idx2 === -1) return state
+          const newTodayTasks = [...state.todayTasks]
+          ;[newTodayTasks[idx1], newTodayTasks[idx2]] = [newTodayTasks[idx2], newTodayTasks[idx1]]
+          return { todayTasks: newTodayTasks }
+        }),
     }),
     { name: "suguyaru-today", skipHydration: true }
   )
