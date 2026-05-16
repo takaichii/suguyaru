@@ -9,11 +9,14 @@ export type Goal = {
   visionId?: string
 }
 
+export type Priority = 'high' | 'medium' | 'low'
+
 export type Task = {
   id: string
   title: string
   goalId: string
   isDone: boolean
+  priority?: Priority
 }
 
 export type TodayTask = {

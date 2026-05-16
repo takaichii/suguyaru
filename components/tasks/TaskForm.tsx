@@ -9,6 +9,7 @@ export default function TaskForm() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const [title, setTitle] = useState("")
   const [goalId, setGoalId] = useState("")
+  const [priority, setPriority] = useState<"high" | "medium" | "low" | "">("")
   const [isOpen, setIsOpen] = useState(false)
   const [error, setError] = useState("")
   const goals = useGoalStore((s) => s.goals)
@@ -47,8 +48,9 @@ export default function TaskForm() {
       return
     }
     setError("")
-    addTask(trimmed, goalId)
+    addTask(trimmed, goalId, priority || undefined)
     setTitle("")
+    setPriority("")
     inputRef.current?.focus()
   }
 
@@ -108,6 +110,25 @@ export default function TaskForm() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* 優先度（任意） */}
+      <div className="flex items-center gap-2">
+        <span className="text-terminal-muted text-xs shrink-0">優先度（任意）:</span>
+        {(["high", "medium", "low"] as const).map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => setPriority((prev) => prev === p ? "" : p)}
+            className={`text-xs px-2 py-0.5 border transition-colors ${
+              priority === p
+                ? p === "high" ? "border-red-400 text-red-400" : p === "medium" ? "border-yellow-400 text-yellow-400" : "border-terminal-muted text-terminal-muted"
+                : "border-terminal-border text-terminal-muted hover:border-terminal-text hover:text-terminal-text"
+            }`}
+          >
+            {p === "high" ? "[!] H" : p === "medium" ? "[~] M" : "[-] L"}
+          </button>
+        ))}
       </div>
 
       {/* タスク名 + 追加ボタン */}

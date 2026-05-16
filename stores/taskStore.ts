@@ -6,8 +6,9 @@ import type { Task } from "@/types"
 
 interface TaskStore {
   tasks: Task[]
-  addTask: (title: string, goalId: string) => void
+  addTask: (title: string, goalId: string, priority?: Task["priority"]) => void
   updateTask: (taskId: string, title: string) => void
+  updateTaskPriority: (taskId: string, priority: Task["priority"]) => void
   toggleTaskDone: (taskId: string) => void
   deleteTask: (taskId: string) => void
   deleteTasksByGoalId: (goalId: string) => void
@@ -18,16 +19,20 @@ export const useTaskStore = create<TaskStore>()(
   persist(
     (set) => ({
       tasks: [],
-      addTask: (title, goalId) =>
+      addTask: (title, goalId, priority) =>
         set((state) => ({
           tasks: [
             ...state.tasks,
-            { id: crypto.randomUUID(), title, goalId, isDone: false },
+            { id: crypto.randomUUID(), title, goalId, isDone: false, ...(priority ? { priority } : {}) },
           ],
         })),
       updateTask: (taskId, title) =>
         set((state) => ({
           tasks: state.tasks.map((t) => t.id === taskId ? { ...t, title } : t),
+        })),
+      updateTaskPriority: (taskId, priority) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) => t.id === taskId ? { ...t, priority } : t),
         })),
       toggleTaskDone: (taskId) =>
         set((state) => ({
