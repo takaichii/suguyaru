@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTaskStore } from "@/stores/taskStore"
 import type { Goal, Task } from "@/types"
 
 type MapGoalNodeProps = {
@@ -10,6 +11,7 @@ type MapGoalNodeProps = {
 }
 
 export default function MapGoalNode({ goal, tasks, isLast }: MapGoalNodeProps) {
+  const toggleTaskDone = useTaskStore((s) => s.toggleTaskDone)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const doneCount = tasks.filter((t) => t.isDone).length
   const isAllDone = tasks.length > 0 && doneCount === tasks.length
@@ -49,17 +51,21 @@ export default function MapGoalNode({ goal, tasks, isLast }: MapGoalNodeProps) {
       {!isCollapsed && tasks.map((task, i) => {
         const isLastTask = i === tasks.length - 1
         return (
-          <div key={task.id} className="flex items-center gap-2 py-0.5">
+          <button
+            key={task.id}
+            onClick={() => toggleTaskDone(task.id)}
+            className="flex items-center gap-2 py-0.5 w-full text-left group"
+          >
             <span className="text-terminal-muted text-xs shrink-0 select-none">
               {childIndent}{isLastTask ? "└──" : "├──"}
             </span>
-            <span className={`text-xs shrink-0 ${task.isDone ? "text-terminal-green" : "text-terminal-muted"}`}>
+            <span className={`text-xs shrink-0 transition-colors ${task.isDone ? "text-terminal-green" : "text-terminal-muted group-hover:text-terminal-green"}`}>
               {task.isDone ? "[x]" : "[ ]"}
             </span>
-            <span className={`text-xs ${task.isDone ? "text-terminal-muted line-through" : "text-terminal-text"}`}>
+            <span className={`text-xs transition-colors ${task.isDone ? "text-terminal-muted line-through" : "text-terminal-text group-hover:text-terminal-green"}`}>
               {task.title}
             </span>
-          </div>
+          </button>
         )
       })}
     </div>
