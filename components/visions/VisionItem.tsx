@@ -1,7 +1,9 @@
 "use client"
 
+import { useVisionStore } from "@/stores/visionStore"
 import { useDeleteVision } from "@/hooks/useDeleteVision"
 import ConfirmAction from "@/components/ui/ConfirmAction"
+import InlineEdit from "@/components/ui/InlineEdit"
 import type { Vision } from "@/types"
 
 type VisionItemProps = {
@@ -12,6 +14,7 @@ type VisionItemProps = {
 }
 
 export default function VisionItem({ vision, goalCount, taskCount, doneCount }: VisionItemProps) {
+  const updateVision = useVisionStore((s) => s.updateVision)
   const deleteVision = useDeleteVision()
 
   const isAllDone = taskCount > 0 && doneCount === taskCount
@@ -22,7 +25,11 @@ export default function VisionItem({ vision, goalCount, taskCount, doneCount }: 
     <div className="py-2 border-b border-terminal-border last:border-0 px-4">
       <div className="flex items-center gap-2">
         <span className="text-terminal-green">&gt;</span>
-        <span className="text-terminal-text flex-1">{vision.title}</span>
+        <InlineEdit
+          value={vision.title}
+          onCommit={(title) => updateVision(vision.id, title)}
+          className="flex-1 text-sm"
+        />
         <span className="text-terminal-muted text-sm">{goalCount} goals</span>
 
         {hasTask ? (
