@@ -33,6 +33,8 @@ export default function StatsView() {
     setTodayLabel(new Date().toISOString().slice(0, 10))
   }, [])
 
+  if (!todayLabel) return null
+
   const doneTasks = tasks.filter((t) => t.isDone).length
   const totalTasks = tasks.length
   const doneGoals = goals.filter((g) => {
@@ -42,7 +44,7 @@ export default function StatsView() {
 
   // 直近7日のデイリー完了数
   const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(todayLabel || new Date().toISOString().slice(0, 10))
+    const d = new Date(todayLabel)
     d.setDate(d.getDate() - (6 - i))
     return d.toISOString().slice(0, 10)
   })
