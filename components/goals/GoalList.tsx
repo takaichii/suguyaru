@@ -14,9 +14,11 @@ export default function GoalList() {
 
   if (goals.length === 0) {
     return (
-      <p className="text-terminal-muted text-sm">
-        &gt; まだ Goal がありません。最初の Goal を作成しましょう。
-      </p>
+      <div className="font-mono border border-terminal-border px-4 py-6 text-center space-y-2">
+        <p className="text-terminal-muted text-xs">$ tree --status ./goals</p>
+        <p className="text-terminal-muted text-xs">0 goals, 0 tasks</p>
+        <p className="text-terminal-muted text-xs mt-2">Goal を作成するとここに表示されます。</p>
+      </div>
     )
   }
 

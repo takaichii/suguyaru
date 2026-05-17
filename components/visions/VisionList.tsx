@@ -12,9 +12,11 @@ export default function VisionList() {
 
   if (visions.length === 0) {
     return (
-      <p className="text-terminal-muted text-sm">
-        &gt; まだ Vision がありません。最初の Vision を作成しましょう。
-      </p>
+      <div className="font-mono border border-terminal-border px-4 py-6 text-center space-y-2">
+        <p className="text-terminal-muted text-xs">$ ls ./visions</p>
+        <p className="text-terminal-muted text-xs">0 visions, 0 goals, 0 tasks</p>
+        <p className="text-terminal-muted text-xs mt-2">Vision を作成するとここに表示されます。</p>
+      </div>
     )
   }
 
