@@ -15,11 +15,15 @@ export default function SelectList() {
   const goals = useGoalStore((s) => s.goals)
   const tasks = useTaskStore((s) => s.tasks)
   const { addTodayTask, removeTodayTask, getTodayTasks } = useTodayStore()
+  const [searchQuery, setSearchQuery] = useState("")
 
   const todayTaskIds = new Set(getTodayTasks().map((t) => t.taskId))
   const [selected, setSelected] = useState<Set<string>>(new Set(todayTaskIds))
 
-  const incompleteTasks = tasks.filter((t) => !t.isDone)
+  const query = searchQuery.trim().toLowerCase()
+  const incompleteTasks = tasks
+    .filter((t) => !t.isDone)
+    .filter((t) => !query || t.title.toLowerCase().includes(query))
   const isOverLimit = selected.size >= MAX_TODAY_TASKS
 
   const handleToggle = (taskId: string) => {
@@ -57,6 +61,24 @@ export default function SelectList() {
 
   return (
     <div>
+      <div className="flex items-center border border-terminal-border focus-within:border-terminal-green transition-colors mb-4">
+        <span className="text-terminal-muted text-xs px-2 shrink-0">&gt;</span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="タスクを検索..."
+          className="flex-1 bg-transparent text-terminal-text placeholder-terminal-muted text-sm py-1 pr-2 focus:outline-none"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery("")}
+            className="text-terminal-muted hover:text-terminal-text text-xs px-2 shrink-0"
+          >
+            ✕
+          </button>
+        )}
+      </div>
       <div className="flex items-center justify-between mb-6">
         <p className="text-terminal-green">&gt; タスクを選ぶ</p>
         <span className={`text-sm ${isOverLimit ? "text-yellow-400" : "text-terminal-muted"}`}>
@@ -67,7 +89,9 @@ export default function SelectList() {
 
       {incompleteTasks.length === 0 ? (
         <p className="text-terminal-muted text-sm">
-          &gt; 未完了のタスクはありません。タスクを作成しましょう。
+          {query
+            ? `> "${searchQuery}" に一致するタスクはありません。`
+            : "> 未完了のタスクはありません。タスクを作成しましょう。"}
         </p>
       ) : (
         <>
