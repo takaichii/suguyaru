@@ -16,9 +16,11 @@ export default function TaskList() {
 
   if (tasks.length === 0) {
     return (
-      <p className="text-terminal-muted text-sm">
-        &gt; まだタスクがありません。タスクを作成しましょう。
-      </p>
+      <div className="font-mono border border-terminal-border px-4 py-6 text-center space-y-2">
+        <p className="text-terminal-muted text-xs">$ ls ./tasks</p>
+        <p className="text-terminal-muted text-xs">0 tasks</p>
+        <p className="text-terminal-muted text-xs mt-2">タスクを作成するとここに表示されます。</p>
+      </div>
     )
   }
 

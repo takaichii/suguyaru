@@ -80,7 +80,10 @@ export default function SelectList() {
         )}
       </div>
       <div className="flex items-center justify-between mb-6">
-        <p className="text-terminal-green">&gt; タスクを選ぶ</p>
+        <div className="font-mono">
+          <p className="text-terminal-muted text-xs">$ queue --today ./tasks</p>
+          <p className="text-terminal-green text-sm mt-0.5">&gt; Select</p>
+        </div>
         <span className={`text-sm ${isOverLimit ? "text-yellow-400" : "text-terminal-muted"}`}>
           {selected.size}/{MAX_TODAY_TASKS} 選択中
           {isOverLimit && " — 上限"}
