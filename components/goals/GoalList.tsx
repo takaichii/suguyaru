@@ -6,9 +6,28 @@ import { useTaskStore } from "@/stores/taskStore"
 import { useUiStore } from "@/stores/uiStore"
 import GoalItem from "./GoalItem"
 
+function renderGoals(goalList: ReturnType<typeof useGoalStore.getState>["goals"], tasks: ReturnType<typeof useTaskStore.getState>["tasks"], swapGoals: (a: string, b: string) => void) {
+  return goalList.map((goal, idx) => {
+    const goalTasks = tasks.filter((t) => t.goalId === goal.id)
+    return (
+      <GoalItem
+        key={goal.id}
+        goal={goal}
+        taskCount={goalTasks.length}
+        doneCount={goalTasks.filter((t) => t.isDone).length}
+        isFirst={idx === 0}
+        isLast={idx === goalList.length - 1}
+        onMoveUp={() => swapGoals(goal.id, goalList[idx - 1].id)}
+        onMoveDown={() => swapGoals(goal.id, goalList[idx + 1].id)}
+      />
+    )
+  })
+}
+
 export default function GoalList() {
   const visions = useVisionStore((s) => s.visions)
   const goals = useGoalStore((s) => s.goals)
+  const swapGoals = useGoalStore((s) => s.swapGoals)
   const tasks = useTaskStore((s) => s.tasks)
   const { collapsedVisionIds, toggleVisionCollapsed } = useUiStore()
 
@@ -43,17 +62,7 @@ export default function GoalList() {
               <span className="text-terminal-text text-sm flex-1">{vision.title}</span>
               <span className="text-terminal-muted text-xs">{visionGoals.length} goals</span>
             </button>
-            {!isCollapsed && visionGoals.map((goal) => {
-              const goalTasks = tasks.filter((t) => t.goalId === goal.id)
-              return (
-                <GoalItem
-                  key={goal.id}
-                  goal={goal}
-                  taskCount={goalTasks.length}
-                  doneCount={goalTasks.filter((t) => t.isDone).length}
-                />
-              )
-            })}
+            {!isCollapsed && renderGoals(visionGoals, tasks, swapGoals)}
           </div>
         )
       })}
@@ -63,17 +72,7 @@ export default function GoalList() {
           <div className="px-4 py-2 border-b border-terminal-border bg-terminal-border">
             <span className="text-terminal-muted text-sm">未分類</span>
           </div>
-          {unclassifiedGoals.map((goal) => {
-            const goalTasks = tasks.filter((t) => t.goalId === goal.id)
-            return (
-              <GoalItem
-                key={goal.id}
-                goal={goal}
-                taskCount={goalTasks.length}
-                doneCount={goalTasks.filter((t) => t.isDone).length}
-              />
-            )
-          })}
+          {renderGoals(unclassifiedGoals, tasks, swapGoals)}
         </div>
       )}
     </div>

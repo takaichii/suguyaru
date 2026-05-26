@@ -11,6 +11,7 @@ export default function TaskList() {
   const visions = useVisionStore((s) => s.visions)
   const goals = useGoalStore((s) => s.goals)
   const tasks = useTaskStore((s) => s.tasks)
+  const swapTasks = useTaskStore((s) => s.swapTasks)
   const { showCompletedTasks, toggleShowCompletedTasks, collapsedGoalIds, toggleGoalCollapsed } = useUiStore()
   const [searchQuery, setSearchQuery] = useState("")
 
@@ -88,8 +89,15 @@ export default function TaskList() {
                   <span className="text-terminal-green text-sm flex-1">{goal.title}</span>
                   <span className="text-terminal-muted text-xs">{goalTasks.length} tasks</span>
                 </button>
-                {!isCollapsed && goalTasks.map((task) => (
-                  <TaskItem key={task.id} task={task} />
+                {!isCollapsed && goalTasks.map((task, idx) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    isFirst={idx === 0}
+                    isLast={idx === goalTasks.length - 1}
+                    onMoveUp={() => swapTasks(task.id, goalTasks[idx - 1].id)}
+                    onMoveDown={() => swapTasks(task.id, goalTasks[idx + 1].id)}
+                  />
                 ))}
               </div>
             )

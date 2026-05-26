@@ -10,6 +10,7 @@ interface GoalStore {
   updateGoal: (goalId: string, title: string) => void
   deleteGoal: (goalId: string) => void
   deleteGoalsByVisionId: (visionId: string) => void
+  swapGoals: (goalId1: string, goalId2: string) => void
 }
 
 export const useGoalStore = create<GoalStore>()(
@@ -32,6 +33,15 @@ export const useGoalStore = create<GoalStore>()(
         set((state) => ({
           goals: state.goals.filter((g) => g.visionId !== visionId),
         })),
+      swapGoals: (goalId1, goalId2) =>
+        set((state) => {
+          const idx1 = state.goals.findIndex((g) => g.id === goalId1)
+          const idx2 = state.goals.findIndex((g) => g.id === goalId2)
+          if (idx1 === -1 || idx2 === -1) return state
+          const newGoals = [...state.goals]
+          ;[newGoals[idx1], newGoals[idx2]] = [newGoals[idx2], newGoals[idx1]]
+          return { goals: newGoals }
+        }),
     }),
     { name: "suguyaru-goals", skipHydration: true }
   )

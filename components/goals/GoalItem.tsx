@@ -10,9 +10,13 @@ type GoalItemProps = {
   goal: Goal
   taskCount: number
   doneCount: number
+  isFirst?: boolean
+  isLast?: boolean
+  onMoveUp?: () => void
+  onMoveDown?: () => void
 }
 
-export default function GoalItem({ goal, taskCount, doneCount }: GoalItemProps) {
+export default function GoalItem({ goal, taskCount, doneCount, isFirst, isLast, onMoveUp, onMoveDown }: GoalItemProps) {
   const updateGoal = useGoalStore((s) => s.updateGoal)
   const deleteGoal = useDeleteGoal()
 
@@ -20,8 +24,12 @@ export default function GoalItem({ goal, taskCount, doneCount }: GoalItemProps) 
   const progressPercent = taskCount > 0 ? Math.round((doneCount / taskCount) * 100) : 0
 
   return (
-    <div className="py-2 border-b border-terminal-border last:border-0 px-4">
+    <div className="py-2 border-b border-terminal-border last:border-0 px-4 group">
       <div className="flex items-center gap-2">
+        <div className="flex flex-col shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onClick={onMoveUp} disabled={isFirst} className="text-terminal-muted hover:text-terminal-green disabled:opacity-20 disabled:cursor-not-allowed text-xs leading-none">▲</button>
+          <button onClick={onMoveDown} disabled={isLast} className="text-terminal-muted hover:text-terminal-green disabled:opacity-20 disabled:cursor-not-allowed text-xs leading-none">▼</button>
+        </div>
         <span className="text-terminal-green">&gt;</span>
         <InlineEdit
           value={goal.title}

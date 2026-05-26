@@ -12,6 +12,7 @@ interface TaskStore {
   deleteTask: (taskId: string) => void
   deleteTasksByGoalId: (goalId: string) => void
   deleteCompletedTasks: () => string[]
+  swapTasks: (taskId1: string, taskId2: string) => void
 }
 
 export const useTaskStore = create<TaskStore>()(
@@ -51,6 +52,15 @@ export const useTaskStore = create<TaskStore>()(
         })
         return deletedIds
       },
+      swapTasks: (taskId1, taskId2) =>
+        set((state) => {
+          const idx1 = state.tasks.findIndex((t) => t.id === taskId1)
+          const idx2 = state.tasks.findIndex((t) => t.id === taskId2)
+          if (idx1 === -1 || idx2 === -1) return state
+          const newTasks = [...state.tasks]
+          ;[newTasks[idx1], newTasks[idx2]] = [newTasks[idx2], newTasks[idx1]]
+          return { tasks: newTasks }
+        }),
     }),
     { name: "suguyaru-tasks", skipHydration: true }
   )
