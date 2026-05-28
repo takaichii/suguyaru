@@ -22,6 +22,13 @@ export default function TaskItem({ task }: TaskItemProps) {
         onCommit={(title) => updateTask(task.id, title)}
         className={`flex-1 text-sm ${task.isDone ? "line-through text-terminal-muted" : ""}`}
       />
+      {task.priority && !task.isDone && (
+        <span className={`text-xs shrink-0 ${
+          task.priority === "high" ? "text-red-400" : task.priority === "medium" ? "text-yellow-400" : "text-terminal-muted"
+        }`}>
+          {task.priority === "high" ? "[!]" : task.priority === "medium" ? "[~]" : "[-]"}
+        </span>
+      )}
       <ConfirmAction
         triggerLabel="削除"
         message="削除しますか？"

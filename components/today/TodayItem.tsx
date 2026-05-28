@@ -40,6 +40,13 @@ export default function TodayItem({ task, isPending, isFirst, isLast, onMoveUp, 
           onChange={() => toggleTaskDone(task.id)}
           className="accent-terminal-green shrink-0"
         />
+        {task.priority && !task.isDone && (
+          <span className={`text-xs shrink-0 ${
+            task.priority === "high" ? "text-red-400" : task.priority === "medium" ? "text-yellow-400" : "text-terminal-muted"
+          }`}>
+            {task.priority === "high" ? "[!]" : task.priority === "medium" ? "[~]" : "[-]"}
+          </span>
+        )}
         <span
           className={`text-sm transition-all duration-300 truncate ${
             task.isDone
